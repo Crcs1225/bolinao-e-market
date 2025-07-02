@@ -10,6 +10,7 @@ const routes = [
   { path: '/signup', name: 'Signup', component: SignupView },
   { path: '/buyer', name: 'Buyer', component: BuyerView },
   { path: '/seller', name: 'Seller', component: SellerView },
+  {path: '/seller/setup', name: 'SellerSetup', component: () => import('../views/SellerSetup.vue')},
   { path: '/:catchAll(.*)', redirect: '/login' }, // catch all unknown routes
 ]
 
@@ -20,31 +21,37 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
-  const { data: { user } } = await supabase.auth.getUser()
-  // If not logged in, always redirect to login except on /login or /signup
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user;
+
   if (!user && to.name !== 'Login' && to.name !== 'Signup') {
-    return next({ name: 'Login' })
+    return next({ name: 'Login' });
   }
-  // If logged in and trying to access login/signup, redirect to correct dashboard
+
   if (user && (to.name === 'Login' || to.name === 'Signup')) {
-    // Example: check user metadata for account type
-    const accountType = user.user_metadata?.account_type
+    const accountType =
+      user.user_metadata?.accountType || user.user_metadata?.account_type;
     if (accountType === 'seller') {
-      return next({ name: 'Seller' })
+      return next({ name: 'Seller' });
     } else {
-      return next({ name: 'Buyer' })
+      return next({ name: 'Buyer' });
     }
   }
-  // If logged in and going to root, redirect to correct dashboard
+
   if (user && to.path === '/') {
-    const accountType = user.user_metadata?.account_type
+    const accountType =
+      user.user_metadata?.accountType || user.user_metadata?.account_type;
     if (accountType === 'seller') {
-      return next({ name: 'Seller' })
+      return next({ name: 'Seller' });
     } else {
-      return next({ name: 'Buyer' })
+      return next({ name: 'Buyer' });
     }
   }
-  next()
-})
+
+  next();
+});
+
 
 export default router

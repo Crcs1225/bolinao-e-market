@@ -1,7 +1,9 @@
 <template>
   <div class="buyer-landing">
-    <h1>Welcome, Buyer!</h1>
-
+    <div class="header-row">
+      <h1>Welcome, Buyer!</h1>
+      <button class="logout-btn" @click="logout">Logout</button>
+    </div>
     <!-- Newly Arrived Section -->
     <section class="newly-arrived">
       <h2>Newly Arrived</h2>
@@ -14,7 +16,6 @@
         </div>
       </div>
     </section>
-
     <!-- Sort By Category Section -->
     <section class="categories">
       <h2>Shop by Category</h2>
@@ -46,6 +47,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { supabase } from '@/util/supabase'
+
+const router = useRouter()
 
 // Sample data
 const items = ref([
@@ -89,6 +94,11 @@ const filteredItems = computed(() => {
   }
   return items.value.filter(item => item.category === selectedCategory.value)
 })
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
 </script>
 
 <style scoped>
@@ -98,9 +108,28 @@ const filteredItems = computed(() => {
   padding: 2rem;
   font-family: Arial, sans-serif;
 }
-h1 {
-  text-align: center;
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
+}
+h1 {
+  margin-bottom: 0;
+}
+.logout-btn {
+  background: #e1701a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.logout-btn:hover {
+  background: #b94a48;
 }
 section {
   margin-bottom: 2.5rem;

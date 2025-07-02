@@ -61,7 +61,8 @@ const login = async () => {
   }
   // Redirect based on user role if needed
   const user = data.user;
-  const accountType = user?.user_metadata?.role || user?.user_metadata?.account_type;
+  const accountType = user?.user_metadata?.accountType; // ✅ correct key
+
   if (accountType === 'seller') {
     router.push('/seller');
   } else {
@@ -276,25 +277,52 @@ input::placeholder {
 }
 
 @media (max-width: 900px) {
+  .login-page {
+    padding: 24px;
+    min-height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #f9d29d 0%, #ffd6e0 100%);
+  }
   .login-card-container {
     flex-direction: column;
     border-radius: 18px;
-    width: 98vw;
+    width: 100vw;
     min-width: 0;
+    max-width: 100vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    background: none;
+    padding: 0;
+    gap: 0;
+    margin: 0 auto;
+    align-items: center;
   }
   .login-form-card,
   .signup-card {
     border-radius: 0;
     width: 100%;
-    margin-left: 0;
+    min-width: 0;
+    max-width: 420px;
+    margin: 0 auto;
     padding: 32px 10px;
+    box-sizing: border-box;
   }
   .signup-card {
     margin-top: -20px;
+    border-radius: 0 0 18px 18px;
+  }
+  .login-form-card {
+    border-radius: 18px 18px 0 0;
   }
   .icon-title-row {
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100%;
   }
 }
 </style>

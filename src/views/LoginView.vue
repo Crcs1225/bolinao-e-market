@@ -45,23 +45,28 @@ const showError = ref(false);
 
 const login = async () => {
   error.value = '';
+  showError.value = false;
+
   if (!username.value || !password.value) {
     error.value = 'Please enter your email and password.';
     showError.value = true;
     return;
   }
-  const { error: loginError, data } = await supabase.auth.signInWithPassword({
+
+  const { data, error: loginError } = await supabase.auth.signInWithPassword({
     email: username.value,
     password: password.value,
   });
+
   if (loginError) {
-    error.value = loginError.message;
+    // 🔴 Display the real error
+    error.value = loginError.message || 'Login failed. Please try again.';
     showError.value = true;
     return;
   }
-  // Redirect based on user role if needed
+
   const user = data.user;
-  const accountType = user?.user_metadata?.accountType; // ✅ correct key
+  const accountType = user?.user_metadata?.accountType;
 
   if (accountType === 'seller') {
     router.push('/seller');
@@ -69,6 +74,7 @@ const login = async () => {
     router.push('/buyer');
   }
 };
+
 const goToSignup = () => {
   router.push('/signup');
 };

@@ -18,7 +18,6 @@ import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const router = useRouter()
 const error = ref('')
-
 let timeout
 
 const logoutDueToInactivity = async () => {
@@ -27,18 +26,43 @@ const logoutDueToInactivity = async () => {
   router.push('/login')
 }
 
+// Only reset timer if user is logged in
 const resetTimer = () => {
   clearTimeout(timeout)
-  timeout = setTimeout(logoutDueToInactivity, 15 * 60 * 1000) // 15 minutes
+  if (supabase.auth.getSession && supabase.auth.getSession().data?.session) {
+    timeout = setTimeout(logoutDueToInactivity, 15 * 60 * 1000)
+  }
 }
 
 const activityEvents = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']
 
+// Watch for auth state changes
+let unsub
 onMounted(() => {
-  activityEvents.forEach(event =>
-    window.addEventListener(event, resetTimer)
-  )
-  resetTimer() // Start the timer initially
+  // Listen for activity only if logged in
+  unsub = supabase.auth.onAuthStateChange((event, session) => {
+    clearTimeout(timeout)
+    if (session) {
+      activityEvents.forEach(event =>
+        window.addEventListener(event, resetTimer)
+      )
+      resetTimer()
+    } else {
+      activityEvents.forEach(event =>
+        window.removeEventListener(event, resetTimer)
+      )
+      clearTimeout(timeout)
+    }
+  })
+  // Initial check
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      activityEvents.forEach(event =>
+        window.addEventListener(event, resetTimer)
+      )
+      resetTimer()
+    }
+  })
 })
 
 onUnmounted(() => {
@@ -46,15 +70,9 @@ onUnmounted(() => {
   activityEvents.forEach(event =>
     window.removeEventListener(event, resetTimer)
   )
+  if (unsub) unsub.data?.subscription.unsubscribe()
 })
 </script>
 
 <style>
-.app-container {
-  /* Your styles here */
-}
-
-.main-content {
-  /* Your styles here */
-}
 </style>

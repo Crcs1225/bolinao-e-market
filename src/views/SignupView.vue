@@ -60,7 +60,7 @@
               {{ loading ? 'Signing up...' : 'Sign Up' }}
             </button>
           </form>
-          <ErrorMessage :show="!!error" :message="error" @close="error = ''" />
+
         </div>
       </div>
       <div class="already-account-card">
@@ -88,13 +88,14 @@
       </div>
     </div>
   </div>
+  <ErrorDialog v-if="showError" :message="error" @close="showError = false" />
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/util/supabase'
-import ErrorMessage from '@/components/ErrorMessage.vue'
+import ErrorDialog from '@/components/ErrorMessage.vue'
 
 const fullName = ref('')
 const email = ref('')
@@ -105,24 +106,30 @@ const loading = ref(false)
 const error = ref('')
 const showTerms = ref(false)
 const router = useRouter()
+const showError = ref(false)
 
 const register = async () => {
   error.value = ''
+  showError.value = false
   if (!fullName.value || !email.value || !password.value || !accountType.value) {
     error.value = 'Please fill in all fields.'
+    showError.value = true
     return
   }
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailPattern.test(email.value)) {
     error.value = 'Please enter a valid email address.'
+    showError.value = true
     return
   }
   if (password.value.length < 6) {
     error.value = 'Password must be at least 6 characters.'
+    showError.value = true
     return
   }
   if (!agree.value) {
     error.value = 'You must agree to the terms and conditions.'
+    showError.value = true
     return
   }
 
@@ -146,6 +153,7 @@ const register = async () => {
 
     if (signUpError) {
       error.value = signUpError.message
+      showError.value = true
       return
     }
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -155,6 +163,7 @@ const register = async () => {
 
     if (signInError) {
       error.value = signInError.message;
+      showError.value = true;
       return;
     }
 
@@ -167,6 +176,7 @@ const register = async () => {
     }
   } catch (e) {
     error.value = e.message || 'An unexpected error occurred.'
+    showError.value = true
   } finally {
     loading.value = false
   }

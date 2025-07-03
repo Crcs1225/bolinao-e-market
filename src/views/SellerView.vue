@@ -1,3 +1,19 @@
+<template>
+  <div class="seller-dashboard">
+    <Sidebar
+      :collapsed="isSidebarCollapsed"
+      :current="currentView"
+      @toggle="toggleSidebar"
+      @navigate="val => currentView = val"
+      @logout="logout"
+    />
+    <main class="main-content">
+      <component :is="currentComponent" />
+    </main>
+  </div>
+</template>
+
+
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -18,11 +34,21 @@ const logout = async () => {
   router.push('/login')
 }
 
-const Dashboard = { /* ... */ }
-const Store = { /* ... */ }
-const Orders = { /* ... */ }
-const Payment = { /* ... */ }
-const Account = { /* ... */ }
+const Dashboard = {
+  template: '<div><h2>Dashboard</h2></div>'
+}
+const Store = {
+  template: '<div><h2>Store</h2></div>'
+}
+const Orders = {
+  template: '<div><h2>Orders</h2></div>'
+}
+const Payment = {
+  template: '<div><h2>Payment</h2></div>'
+}
+const Account = {
+  template: '<div><h2>Account Settings</h2></div>'
+}
 
 const componentsMap = {
   dashboard: Dashboard,
@@ -34,20 +60,3 @@ const componentsMap = {
 
 const currentComponent = computed(() => componentsMap[currentView.value])
 </script>
-
-<template>
-  <div class="seller-dashboard">
-    <Sidebar
-      :collapsed="isSidebarCollapsed"
-      :current="currentView"
-      @toggle="toggleSidebar"
-      @navigate="val => currentView = val"
-      @logout="logout"
-    />
-    <main class="main-content">
-      <component :is="currentComponent" />
-    </main>
-  </div>
-</template>
-
-

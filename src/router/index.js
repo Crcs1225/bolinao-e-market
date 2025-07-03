@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
-import BuyerView from '../views/BuyerView.vue'
-import SellerView from '../views/SellerView.vue'
+import BuyerView from '@/views/BuyerView.vue'
+import SellerView from '@/views/SellerView.vue'
 import { supabase } from '../util/supabase'
 
 const routes = [
@@ -10,7 +10,7 @@ const routes = [
   { path: '/signup', name: 'Signup', component: SignupView },
   { path: '/buyer', name: 'Buyer', component: BuyerView },
   { path: '/seller', name: 'Seller', component: SellerView },
-  {path: '/seller/setup', name: 'SellerSetup', component: () => import('../views/SellerSetup.vue')},
+  {path: '/seller/setup', name: 'SellerSetup', component: () => import('@/views/SellerSetup.vue')},
   { path: '/:catchAll(.*)', redirect: '/login' }, // catch all unknown routes
 ]
 

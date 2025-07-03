@@ -1,61 +1,68 @@
 <template>
-  <div v-if="show" class="error-dialog-backdrop">
-    <div class="error-dialog">
-      <div class="error-title">Error</div>
-      <div class="error-message">{{ message }}</div>
-      <button class="close-btn" @click="$emit('close')">Close</button>
-    </div>
+  <div class="error-dialog">
+    <span class="error-icon">!</span>
+    <span class="error-text">{{ message }}</span>
+    <button class="close-btn" @click="$emit('close')" aria-label="Close">&times;</button>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  show: Boolean,
-  message: String
-});
+defineProps(['message']);
 </script>
 
 <style scoped>
-.error-dialog-backdrop {
+.error-dialog {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffbe9;
+  color: #b94a48;
+  border: 1.5px solid #f7b267;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px #e1701a22;
+  padding: 0.8rem 2.2rem 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 220px;
+  max-width: 90vw;
+  font-family: 'Quicksand', 'Montserrat', Arial, sans-serif;
+  font-size: 1rem;
+  z-index: 999;
+}
+
+.error-icon {
+  background: #e1701a;
+  color: #fff;
+  border-radius: 50%;
+  width: 1.7em;
+  height: 1.7em;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-}
-.error-dialog {
-  background: #fffbe9;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  padding: 32px 24px 20px 24px;
-  min-width: 260px;
-  max-width: 90vw;
-  text-align: center;
-}
-.error-title {
-  font-size: 1.3rem;
-  color: #e1701a;
   font-weight: bold;
-  margin-bottom: 12px;
+  font-size: 1.1em;
+  box-shadow: 0 2px 8px #e1701a22;
 }
-.error-message {
-  color: #b94a48;
-  margin-bottom: 18px;
-  font-size: 1rem;
+
+.error-text {
+  flex: 1;
+  word-break: break-word;
 }
+
 .close-btn {
-  background: #e1701a;
-  color: #fff;
+  background: none;
   border: none;
-  border-radius: 6px;
-  padding: 8px 24px;
-  font-size: 1rem;
+  color: #e1701a;
+  font-size: 1.5rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  padding: 0 0.3rem;
+  line-height: 1;
+  transition: color 0.2s;
 }
 .close-btn:hover {
-  background: #b94a48;
+  color: #b94a48;
 }
 </style>

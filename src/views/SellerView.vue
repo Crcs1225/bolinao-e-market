@@ -18,10 +18,15 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/util/supabase'
-import Sidebar from '@/components/Sidebar.vue' // ← import
+import Sidebar from '@/components/Sidebar.vue'
+
+import Dashboard from './seller/Dashboard.vue'
+import Store from './seller/Store.vue'
+import Orders from './seller/Orders.vue'
+import Payment from './seller/Payment.vue'
+import Account from './seller/Account.vue'
 
 const router = useRouter()
-
 const isSidebarCollapsed = ref(false)
 const currentView = ref('dashboard')
 
@@ -34,22 +39,6 @@ const logout = async () => {
   router.push('/login')
 }
 
-const Dashboard = {
-  template: '<div><h2>Dashboard</h2></div>'
-}
-const Store = {
-  template: '<div><h2>Store</h2></div>'
-}
-const Orders = {
-  template: '<div><h2>Orders</h2></div>'
-}
-const Payment = {
-  template: '<div><h2>Payment</h2></div>'
-}
-const Account = {
-  template: '<div><h2>Account Settings</h2></div>'
-}
-
 const componentsMap = {
   dashboard: Dashboard,
   store: Store,
@@ -60,3 +49,46 @@ const componentsMap = {
 
 const currentComponent = computed(() => componentsMap[currentView.value])
 </script>
+
+<style>
+.seller-dashboard {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1 1 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f9d29d 0%, #ffd6e0 100%);
+}
+
+/* Responsive for mobile */
+@media (max-width: 900px) {
+  .seller-dashboard {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    min-height: unset !important;
+    border-radius: 0 0 18px 18px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+    position: static !important;
+    z-index: 2;
+  }
+  .main-content {
+    padding: 1.2rem 0.5rem;
+    height: auto;
+    min-height: 70vh;
+    background: linear-gradient(135deg, #f9d29d 0%, #ffd6e0 100%);
+  }
+}
+</style>
